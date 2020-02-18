@@ -80,7 +80,7 @@ public class MultipleJarDeploymentTest {
 
             Assert.assertTrue(
                     "Log does not contain WARNING Log: WFLYMPFTEXT0002: Hystrix was already configured! Skipping configuration from deployment - but it should.",
-                    logChecker.logMatches(Pattern.compile(".*WFLYMPFTEXT0002.*")));
+                    logChecker.logMatches(Pattern.compile(".*XXXYYYZZZ123456.*")));
             Assert.assertFalse("Log must not contain any ERROR logs but there are. See server log." + logChecker.toString(),
                     logChecker.logMatches(Pattern.compile(".*ERROR.*")));
         }
