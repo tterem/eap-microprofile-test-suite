@@ -52,10 +52,7 @@ public class MicroProfileFaultTolerance10Test {
 
     @Deployment(testable = false)
     public static Archive<?> deployment() {
-        String mpConfig = "hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=5000\n" +
-                "hystrix.command.default.execution.isolation.semaphore.maxConcurrentRequests=20\n" +
-                "hystrix.threadpool.default.maximumSize=40\n" +
-                "hystrix.threadpool.default.allowMaximumSizeToDivergeFromCoreSize=true\n";
+        String mpConfig = "io.smallrye.faulttolerance.globalThreadPoolSize=40";
 
         return ShrinkWrap.create(WebArchive.class, MicroProfileFaultTolerance10Test.class.getSimpleName() + ".war")
                 .addPackages(true, HelloService.class.getPackage())
@@ -252,7 +249,6 @@ public class MicroProfileFaultTolerance10Test {
     }
 
     private static void testCircuitBreakerFailure(String url, String expectedFallbackResponse, String expectedOkResponse) {
-        // hystrix.command.default.circuitBreaker.requestVolumeThreshold
         int initialRequestsCount = 20;
 
         for (int i = 0; i < initialRequestsCount; i++) {
@@ -260,7 +256,6 @@ public class MicroProfileFaultTolerance10Test {
                     .body(containsString(expectedFallbackResponse));
         }
 
-        // initialRequestsCount * hystrix.command.default.circuitBreaker.errorThresholdPercentage
         int failuresCount = 10;
 
         for (int i = 0; i < failuresCount; i++) {
