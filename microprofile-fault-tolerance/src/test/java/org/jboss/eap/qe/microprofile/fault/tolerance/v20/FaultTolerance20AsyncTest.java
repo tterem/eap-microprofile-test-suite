@@ -46,10 +46,8 @@ public class FaultTolerance20AsyncTest {
 
     @Deployment
     public static Archive<?> deployment() {
-        String mpConfig = "hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=6000\n" +
-                "hystrix.command.default.execution.isolation.semaphore.maxConcurrentRequests=20\n" +
-                "hystrix.threadpool.default.maximumSize=40\n" +
-                "hystrix.threadpool.default.allowMaximumSizeToDivergeFromCoreSize=true\n";
+        String mpConfig = "io.smallrye.faulttolerance.globalThreadPoolSize=40\n" +
+                "io.smallrye.faulttolerance.timeoutExecutorThreads=40";
         return ShrinkWrap.create(WebArchive.class, FaultTolerance20AsyncTest.class.getSimpleName() + ".war")
                 .addClasses(TimeoutException.class, FaultToleranceException.class)
                 .addPackages(true, AsyncHelloService.class.getPackage())

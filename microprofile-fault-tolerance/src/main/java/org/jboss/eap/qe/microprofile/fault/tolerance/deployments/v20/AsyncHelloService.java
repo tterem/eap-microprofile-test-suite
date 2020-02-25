@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.RejectedExecutionException;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.servlet.ServletException;
 
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
 import org.eclipse.microprofile.faulttolerance.Bulkhead;
@@ -13,6 +16,8 @@ import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.eclipse.microprofile.faulttolerance.exceptions.BulkheadException;
+import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceException;
 import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 
 /**
@@ -37,7 +42,9 @@ public class AsyncHelloService {
 
     @Bulkhead(value = 15, waitingTaskQueue = 15)
     @Timeout(value = 1000)
-    @Fallback(fallbackMethod = "processFallback")
+    @Fallback(applyOn = { ServletException.class, ExecutionException.class, FaultToleranceException.class,
+            RejectedExecutionException.class, TimeoutException.class, InterruptedException.class,
+            BulkheadException.class }, fallbackMethod = "processFallback")
     public CompletionStage<MyConnection> bulkheadTimeout(boolean fail) throws InterruptedException {
         if (fail) {
             Thread.sleep(2000);
